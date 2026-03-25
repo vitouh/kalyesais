@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>System Login</title>
+<title>System</title>
 <style>
 body {
   margin: 0;
@@ -14,6 +14,7 @@ body {
   background: black;
 }
 
+/* From Uiverse.io by mahiatlinux */ 
 .form {
   display: flex;
   flex-direction: column;
@@ -26,6 +27,21 @@ body {
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
+::placeholder {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  color: #aaa;
+}
+
+.form button {
+  align-self: flex-end;
+}
+
+.flex-column > label {
+  color: #f1f1f1;
+  font-weight: 600;
+}
+
 .inputForm {
   border: 1.5px solid #333;
   border-radius: 10px;
@@ -33,11 +49,13 @@ body {
   display: flex;
   align-items: center;
   padding-left: 10px;
+  transition: 0.2s ease-in-out;
   background-color: #2b2b2b;
 }
 
 .input {
   margin-left: 10px;
+  border-radius: 10px;
   border: none;
   width: 100%;
   height: 100%;
@@ -45,16 +63,75 @@ body {
   color: #f1f1f1;
 }
 
-.input:focus { outline: none; }
+.input:focus {
+  outline: none;
+}
+
+.inputForm:focus-within {
+  border: 1.5px solid #2d79f3;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.flex-row > div > label {
+  font-size: 14px;
+  color: #f1f1f1;
+  font-weight: 400;
+}
+
+.span {
+  font-size: 14px;
+  margin-left: 5px;
+  color: #2d79f3;
+  font-weight: 500;
+  cursor: pointer;
+}
 
 .button-submit {
-  margin-top: 20px;
+  margin: 20px 0 10px 0;
   background-color: #2d79f3;
   border: none;
   color: white;
+  font-size: 15px;
+  font-weight: 500;
   border-radius: 10px;
   height: 50px;
+  width: 100%;
   cursor: pointer;
+}
+
+.p {
+  text-align: center;
+  color: #f1f1f1;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.btn {
+  margin-top: 10px;
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  gap: 10px;
+  border: 1px solid #333;
+  background-color: #2b2b2b;
+  color: #f1f1f1;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.btn:hover {
+  border: 1px solid #2d79f3;
 }
 
 .error {
@@ -63,57 +140,65 @@ body {
   display: none;
 }
 
-.glitch {
-  animation: glitch 0.2s infinite;
+#loading {
+  display: none;
+  color: #2d79f3;
+  font-family: monospace;
 }
 
-@keyframes glitch {
-  0% { transform: translate(2px, -2px); }
-  25% { transform: translate(-2px, 2px); }
-  50% { transform: translate(2px, 2px); }
-  75% { transform: translate(-2px, -2px); }
-  100% { transform: translate(0, 0); }
-}
-
-#hacked {
+#granted {
   display: none;
   color: #00ff00;
   font-family: monospace;
   font-size: 24px;
-  text-align: center;
 }
 </style>
 </head>
 <body>
 
 <div class="form" id="loginBox">
-  <input class="input" id="username" placeholder="Username">
-  <input class="input" id="password" type="password" placeholder="Password">
+  <div class="flex-column">
+    <label>Username</label>
+  </div>
+  <div class="inputForm">
+    <input class="input" id="username" placeholder="Enter Username">
+  </div>
+
+  <div class="flex-column">
+    <label>Password</label>
+  </div>
+  <div class="inputForm">
+    <input class="input" id="password" type="password" placeholder="Enter Password">
+  </div>
+
   <button class="button-submit" onclick="login()">Login</button>
-  <div class="error" id="errorText">System Error...</div>
+  <div class="error" id="errorText">Error...</div>
 </div>
 
-<div id="hacked">ACCESS GRANTED</div>
+<div id="loading">Decrypting system...</div>
+<div id="granted">ACCESS GRANTED</div>
 
 <script>
 function login() {
   const user = document.getElementById("username").value;
   const pass = document.getElementById("password").value;
   const error = document.getElementById("errorText");
-  const box = document.getElementById("loginBox");
 
   if (user === "what_isthepassword?" && pass === "fidelio") {
-    box.style.display = "none";
-    document.getElementById("hacked").style.display = "block";
-    typeEffect();
-  } else {
-    error.style.display = "block";
-    box.classList.add("glitch");
+    document.getElementById("loginBox").style.display = "none";
+    const load = document.getElementById("loading");
+    load.style.display = "block";
 
     setTimeout(() => {
-      box.classList.remove("glitch");
-      error.innerText = randomError();
-    }, 500);
+      load.style.display = "none";
+      const granted = document.getElementById("granted");
+      granted.style.display = "block";
+      typeEffect();
+    }, 2000);
+
+  } else {
+    error.style.display = "block";
+    error.innerText = randomError();
   }
 }
 
@@ -130,7 +215,7 @@ function randomError() {
 
 function typeEffect() {
   const text = "ACCESS GRANTED";
-  const el = document.getElementById("hacked");
+  const el = document.getElementById("granted");
   el.innerHTML = "";
   let i = 0;
 
