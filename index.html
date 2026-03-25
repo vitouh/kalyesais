@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Login</title>
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: black;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #1f1f1f;
+  padding: 30px;
+  width: 450px;
+  border-radius: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.inputForm {
+  border: 1.5px solid #333;
+  border-radius: 10px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  background-color: #2b2b2b;
+}
+
+.input {
+  margin-left: 10px;
+  border: none;
+  width: 100%;
+  height: 100%;
+  background-color: #2b2b2b;
+  color: #f1f1f1;
+}
+
+.input:focus { outline: none; }
+
+.button-submit {
+  margin-top: 20px;
+  background-color: #2d79f3;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  display: none;
+}
+
+.glitch {
+  animation: glitch 0.2s infinite;
+}
+
+@keyframes glitch {
+  0% { transform: translate(2px, -2px); }
+  25% { transform: translate(-2px, 2px); }
+  50% { transform: translate(2px, 2px); }
+  75% { transform: translate(-2px, -2px); }
+  100% { transform: translate(0, 0); }
+}
+
+#hacked {
+  display: none;
+  color: #00ff00;
+  font-family: monospace;
+  font-size: 24px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="form" id="loginBox">
+  <input class="input" id="username" placeholder="Username">
+  <input class="input" id="password" type="password" placeholder="Password">
+  <button class="button-submit" onclick="login()">Login</button>
+  <div class="error" id="errorText">System Error...</div>
+</div>
+
+<div id="hacked">ACCESS GRANTED</div>
+
+<script>
+function login() {
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+  const error = document.getElementById("errorText");
+  const box = document.getElementById("loginBox");
+
+  if (user === "what_isthepassword?" && pass === "fidelio") {
+    box.style.display = "none";
+    document.getElementById("hacked").style.display = "block";
+    typeEffect();
+  } else {
+    error.style.display = "block";
+    box.classList.add("glitch");
+
+    setTimeout(() => {
+      box.classList.remove("glitch");
+      error.innerText = randomError();
+    }, 500);
+  }
+}
+
+function randomError() {
+  const errors = [
+    "Connection Lost...",
+    "System Failure...",
+    "Unauthorized Access...",
+    "Data Corrupted...",
+    "ERROR 0x0001"
+  ];
+  return errors[Math.floor(Math.random() * errors.length)];
+}
+
+function typeEffect() {
+  const text = "ACCESS GRANTED";
+  const el = document.getElementById("hacked");
+  el.innerHTML = "";
+  let i = 0;
+
+  function type() {
+    if (i < text.length) {
+      el.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(type, 100);
+    }
+  }
+  type();
+}
+</script>
+
+</body>
+</html>
