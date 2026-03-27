@@ -6,6 +6,8 @@
 <title>System</title>
 
 <style>
+
+/* From Uiverse.io by mahiatlinux */ 
 .form {
   display: flex;
   flex-direction: column;
@@ -14,7 +16,23 @@
   padding: 30px;
   width: 450px;
   border-radius: 20px;
-  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+::placeholder {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  color: #aaa;
+}
+
+.form button {
+  align-self: flex-end;
+}
+
+.flex-column > label {
+  color: #f1f1f1;
+  font-weight: 600;
 }
 
 .inputForm {
@@ -28,22 +46,87 @@
 }
 
 .input {
+  margin-left: 10px;
+  border-radius: 10px;
   border: none;
   width: 100%;
   height: 100%;
-  background: transparent;
-  color: white;
+  background-color: transparent;
+  color: #f1f1f1;
 }
 
-.button-submit {
-  background-color: #2d79f3;
-  border: none;
-  color: white;
-  border-radius: 10px;
-  height: 50px;
+.input:focus {
+  outline: none;
+}
+
+.inputForm:focus-within {
+  border: 1.5px solid #2d79f3;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.flex-row > div > label {
+  font-size: 14px;
+  color: #f1f1f1;
+  font-weight: 400;
+}
+
+.span {
+  font-size: 14px;
+  margin-left: 5px;
+  color: #2d79f3;
+  font-weight: 500;
   cursor: pointer;
 }
 
+.button-submit {
+  margin: 20px 0 10px 0;
+  background-color: #2d79f3;
+  border: none;
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 10px;
+  height: 50px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.p {
+  text-align: center;
+  color: #f1f1f1;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.btn {
+  margin-top: 10px;
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  gap: 10px;
+  border: 1px solid #333;
+  background-color: #2b2b2b;
+  color: #f1f1f1;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.btn:hover {
+  border: 1px solid #2d79f3;
+}
+
+/* minimal additions */
 body {
   margin: 0;
   height: 100vh;
@@ -54,46 +137,65 @@ body {
   overflow: hidden;
 }
 
-.error { color: red; display: none; }
+.error {
+  color: red;
+  font-size: 12px;
+  display: none;
+}
 
-#loading { display:none; color:#2d79f3; }
-#granted { display:none; color:#00ff00; font-size:24px; }
+#loading {
+  display: none;
+  color: #2d79f3;
+  font-family: monospace;
+}
 
-/* STARTUP */
+#granted {
+  display: none;
+  color: #00ff00;
+  font-family: monospace;
+  font-size: 24px;
+}
+
+/* STARTUP SCREEN */
 #startupScreen {
   position: fixed;
-  width:100%;
-  height:100%;
-  background:black;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
 }
 
+/* GLITCH LOGO */
 #startupLogo {
-  width:150px;
-  opacity:0;
+  width: 150px;
+  opacity: 0;
 }
 
+/* GLITCH ANIMATION */
 #startupLogo.show {
-  animation: glitch 0.6s steps(2,end) forwards;
+  animation: glitchIn 0.6s steps(2, end) forwards;
 }
 
-@keyframes glitch {
-  0% {opacity:0; transform:scale(1.2) skew(10deg);}
-  20% {opacity:1; transform:scale(0.9) skew(-10deg);}
-  40% {transform:scale(1.1) skew(5deg);}
-  60% {transform:scale(0.95) skew(-3deg);}
-  100% {opacity:1; transform:scale(1);}
+@keyframes glitchIn {
+  0% { opacity: 0; transform: scale(1.2) skew(10deg); filter: hue-rotate(90deg); }
+  20% { opacity: 1; transform: scale(0.9) skew(-10deg); filter: hue-rotate(-90deg); }
+  40% { transform: scale(1.1) skew(5deg); filter: hue-rotate(180deg); }
+  60% { transform: scale(0.95) skew(-3deg); filter: hue-rotate(-180deg); }
+  80% { transform: scale(1.02) skew(2deg); }
+  100% { opacity: 1; transform: scale(1); filter: none; }
 }
 
 #topIcon {
-  position:fixed;
-  top:10px;
-  left:10px;
-  width:30px;
-  display:none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 30px;
+  display: none;
 }
 </style>
 </head>
@@ -107,18 +209,18 @@ body {
 </div>
 
 <div class="form" id="loginBox" style="display:none;">
-  <label>Username</label>
+  <div class="flex-column"><label>Username</label></div>
   <div class="inputForm">
-    <input class="input" id="username">
+    <input class="input" id="username" placeholder="Enter Username">
   </div>
 
-  <label>Password</label>
+  <div class="flex-column"><label>Password</label></div>
   <div class="inputForm">
-    <input class="input" id="password" type="password">
+    <input class="input" id="password" type="password" placeholder="Enter Password">
   </div>
 
   <button class="button-submit" onclick="login(event)">Login</button>
-  <div class="error" id="errorText">Error</div>
+  <div class="error" id="errorText">Error...</div>
 </div>
 
 <div id="loading">Decrypting system...</div>
@@ -133,15 +235,9 @@ body {
 <audio id="clickSound" src="click.mp3"></audio>
 
 <script>
-
-// show glitch on load (no sound yet)
-window.onload = () => {
-  document.getElementById("startupLogo").classList.add("show");
-};
-
 // GLOBAL CLICK SOUND
 document.addEventListener("click", function(e) {
-  if (e.target.id === "startupLogo") return; // skip logo
+  if(e.target.id === "startupLogo") return;
   const click = document.getElementById("clickSound");
   click.currentTime = 0;
   click.play().catch(()=>{});
@@ -150,13 +246,13 @@ document.addEventListener("click", function(e) {
 // ENTER SYSTEM (glitch + startup sound synced)
 function enterSystem(e) {
   e.stopPropagation();
-
   const sound = document.getElementById("startupSound");
   const logo = document.getElementById("startupLogo");
 
   sound.currentTime = 0;
   sound.play().catch(()=>{});
 
+  // micro-delay for glitch
   setTimeout(() => {
     logo.classList.remove("show");
     void logo.offsetWidth;
@@ -173,13 +269,11 @@ function enterSystem(e) {
 // LOGIN
 function login(e) {
   e.stopPropagation();
-
   const user = document.getElementById("username").value;
   const pass = document.getElementById("password").value;
   const error = document.getElementById("errorText");
 
   if (user === "what_isthepassword?" && pass === "fidelio") {
-
     document.getElementById("correctSound").play();
     document.getElementById("loginBox").style.display = "none";
 
@@ -218,17 +312,15 @@ function typeEffect() {
   const el = document.getElementById("granted");
   el.innerHTML = "";
   let i = 0;
-
   function type() {
-    if (i < text.length) {
+    if(i < text.length){
       el.innerHTML += text.charAt(i);
       i++;
-      setTimeout(type, 100);
+      setTimeout(type,100);
     }
   }
   type();
 }
-
 </script>
 
 </body>
