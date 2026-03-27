@@ -6,8 +6,7 @@
 <title>System</title>
 
 <style>
-
-/* From Uiverse.io by mahiatlinux */ 
+/* FORM STYLES */
 .form {
   display: flex;
   flex-direction: column;
@@ -24,15 +23,6 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   color: #aaa;
-}
-
-.form button {
-  align-self: flex-end;
-}
-
-.flex-column > label {
-  color: #f1f1f1;
-  font-weight: 600;
 }
 
 .inputForm {
@@ -59,32 +49,6 @@
   outline: none;
 }
 
-.inputForm:focus-within {
-  border: 1.5px solid #2d79f3;
-}
-
-.flex-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  justify-content: space-between;
-}
-
-.flex-row > div > label {
-  font-size: 14px;
-  color: #f1f1f1;
-  font-weight: 400;
-}
-
-.span {
-  font-size: 14px;
-  margin-left: 5px;
-  color: #2d79f3;
-  font-weight: 500;
-  cursor: pointer;
-}
-
 .button-submit {
   margin: 20px 0 10px 0;
   background-color: #2d79f3;
@@ -98,35 +62,6 @@
   cursor: pointer;
 }
 
-.p {
-  text-align: center;
-  color: #f1f1f1;
-  font-size: 14px;
-  margin: 5px 0;
-}
-
-.btn {
-  margin-top: 10px;
-  width: 100%;
-  height: 50px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 500;
-  gap: 10px;
-  border: 1px solid #333;
-  background-color: #2b2b2b;
-  color: #f1f1f1;
-  cursor: pointer;
-  transition: 0.2s ease-in-out;
-}
-
-.btn:hover {
-  border: 1px solid #2d79f3;
-}
-
-/* minimal additions */
 body {
   margin: 0;
   height: 100vh;
@@ -143,59 +78,49 @@ body {
   display: none;
 }
 
-#loading {
-  display: none;
-  color: #2d79f3;
-  font-family: monospace;
-}
-
-#granted {
-  display: none;
-  color: #00ff00;
-  font-family: monospace;
-  font-size: 24px;
-}
+#loading { display: none; color: #2d79f3; font-family: monospace; }
+#granted { display: none; color: #00ff00; font-family: monospace; font-size:24px; }
 
 /* STARTUP SCREEN */
 #startupScreen {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
 }
 
-/* GLITCH LOGO */
+/* LOGO */
 #startupLogo {
   width: 150px;
-  opacity: 0;
+  cursor:pointer;
 }
 
 /* GLITCH ANIMATION */
 #startupLogo.show {
-  animation: glitchIn 0.6s steps(2, end) forwards;
+  animation: glitchIn 0.6s steps(2,end) forwards;
 }
 
 @keyframes glitchIn {
-  0% { opacity: 0; transform: scale(1.2) skew(10deg); filter: hue-rotate(90deg); }
-  20% { opacity: 1; transform: scale(0.9) skew(-10deg); filter: hue-rotate(-90deg); }
-  40% { transform: scale(1.1) skew(5deg); filter: hue-rotate(180deg); }
-  60% { transform: scale(0.95) skew(-3deg); filter: hue-rotate(-180deg); }
-  80% { transform: scale(1.02) skew(2deg); }
-  100% { opacity: 1; transform: scale(1); filter: none; }
+  0% { opacity:0; transform:scale(1.2) skew(10deg); filter:hue-rotate(90deg);}
+  20% { opacity:1; transform:scale(0.9) skew(-10deg); filter:hue-rotate(-90deg);}
+  40% { transform:scale(1.1) skew(5deg); filter:hue-rotate(180deg);}
+  60% { transform:scale(0.95) skew(-3deg); filter:hue-rotate(-180deg);}
+  80% { transform:scale(1.02) skew(2deg);}
+  100% { opacity:1; transform:scale(1); filter:none;}
 }
 
 #topIcon {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  width: 30px;
-  display: none;
+  position:fixed;
+  top:10px;
+  left:10px;
+  width:30px;
+  display:none;
 }
 </style>
 </head>
@@ -237,14 +162,14 @@ body {
 <script>
 // GLOBAL CLICK SOUND
 document.addEventListener("click", function(e) {
-  if(e.target.id === "startupLogo") return;
+  if(e.target.id === "startupLogo") return; // skip logo
   const click = document.getElementById("clickSound");
   click.currentTime = 0;
   click.play().catch(()=>{});
 });
 
-// ENTER SYSTEM (glitch + startup sound synced)
-function enterSystem(e) {
+// ENTER SYSTEM (glitch + startup sound on click)
+function enterSystem(e){
   e.stopPropagation();
   const sound = document.getElementById("startupSound");
   const logo = document.getElementById("startupLogo");
@@ -252,69 +177,61 @@ function enterSystem(e) {
   sound.currentTime = 0;
   sound.play().catch(()=>{});
 
-  // micro-delay for glitch
-  setTimeout(() => {
+  setTimeout(()=>{
     logo.classList.remove("show");
     void logo.offsetWidth;
     logo.classList.add("show");
-  }, 50);
+  },50);
 
-  setTimeout(() => {
-    document.getElementById("startupScreen").style.display = "none";
-    document.getElementById("loginBox").style.display = "flex";
-    document.getElementById("topIcon").style.display = "block";
-  }, 700);
+  setTimeout(()=>{
+    document.getElementById("startupScreen").style.display="none";
+    document.getElementById("loginBox").style.display="flex";
+    document.getElementById("topIcon").style.display="block";
+  },700);
 }
 
 // LOGIN
-function login(e) {
+function login(e){
   e.stopPropagation();
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
-  const error = document.getElementById("errorText");
+  const user=document.getElementById("username").value;
+  const pass=document.getElementById("password").value;
+  const error=document.getElementById("errorText");
 
-  if (user === "what_isthepassword?" && pass === "fidelio") {
+  if(user==="what_isthepassword?" && pass==="fidelio"){
     document.getElementById("correctSound").play();
-    document.getElementById("loginBox").style.display = "none";
-
-    const load = document.getElementById("loading");
-    load.style.display = "block";
+    document.getElementById("loginBox").style.display="none";
+    const load=document.getElementById("loading");
+    load.style.display="block";
     document.getElementById("loadingSound").play();
 
-    setTimeout(() => {
-      load.style.display = "none";
-      const granted = document.getElementById("granted");
-      granted.style.display = "block";
+    setTimeout(()=>{
+      load.style.display="none";
+      const granted=document.getElementById("granted");
+      granted.style.display="block";
       document.getElementById("grantedSound").play();
       typeEffect();
-    }, 2000);
+    },2000);
 
-  } else {
-    error.style.display = "block";
-    error.innerText = randomError();
+  }else{
+    error.style.display="block";
+    error.innerText=randomError();
     document.getElementById("incorrectSound").play();
   }
 }
 
-function randomError() {
-  const errors = [
-    "Connection Lost...",
-    "System Failure...",
-    "Unauthorized Access...",
-    "Data Corrupted...",
-    "ERROR 0x0001"
-  ];
-  return errors[Math.floor(Math.random() * errors.length)];
+function randomError(){
+  const errors=["Connection Lost...","System Failure...","Unauthorized Access...","Data Corrupted...","ERROR 0x0001"];
+  return errors[Math.floor(Math.random()*errors.length)];
 }
 
-function typeEffect() {
-  const text = "ACCESS GRANTED";
-  const el = document.getElementById("granted");
-  el.innerHTML = "";
-  let i = 0;
-  function type() {
-    if(i < text.length){
-      el.innerHTML += text.charAt(i);
+function typeEffect(){
+  const text="ACCESS GRANTED";
+  const el=document.getElementById("granted");
+  el.innerHTML="";
+  let i=0;
+  function type(){
+    if(i<text.length){
+      el.innerHTML+=text.charAt(i);
       i++;
       setTimeout(type,100);
     }
