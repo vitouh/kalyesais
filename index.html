@@ -21,8 +21,6 @@
 }
 
 ::placeholder {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   color: #aaa;
 }
 
@@ -42,17 +40,15 @@
   display: flex;
   align-items: center;
   padding-left: 10px;
-  transition: 0.2s ease-in-out;
   background-color: #2b2b2b;
 }
 
 .input {
   margin-left: 10px;
-  border-radius: 10px;
   border: none;
   width: 100%;
   height: 100%;
-  background-color: transparent;
+  background: transparent;
   color: #f1f1f1;
 }
 
@@ -64,67 +60,15 @@
   border: 1.5px solid #2d79f3;
 }
 
-.flex-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  justify-content: space-between;
-}
-
-.flex-row > div > label {
-  font-size: 14px;
-  color: #f1f1f1;
-  font-weight: 400;
-}
-
-.span {
-  font-size: 14px;
-  margin-left: 5px;
-  color: #2d79f3;
-  font-weight: 500;
-  cursor: pointer;
-}
-
 .button-submit {
   margin: 20px 0 10px 0;
   background-color: #2d79f3;
   border: none;
   color: white;
-  font-size: 15px;
-  font-weight: 500;
   border-radius: 10px;
   height: 50px;
   width: 100%;
   cursor: pointer;
-}
-
-.p {
-  text-align: center;
-  color: #f1f1f1;
-  font-size: 14px;
-  margin: 5px 0;
-}
-
-.btn {
-  margin-top: 10px;
-  width: 100%;
-  height: 50px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 500;
-  gap: 10px;
-  border: 1px solid #333;
-  background-color: #2b2b2b;
-  color: #f1f1f1;
-  cursor: pointer;
-  transition: 0.2s ease-in-out;
-}
-
-.btn:hover {
-  border: 1px solid #2d79f3;
 }
 
 body {
@@ -156,7 +100,7 @@ body {
   font-size: 24px;
 }
 
-/* NEW STUFF */
+/* STARTUP SCREEN */
 #startupScreen {
   position: fixed;
   top: 0;
@@ -170,17 +114,25 @@ body {
   z-index: 999;
 }
 
+/* GLITCH LOGO */
 #startupLogo {
   width: 150px;
   opacity: 0;
-  filter: blur(10px);
-  transition: 1.5s ease;
-  cursor: pointer;
+  transform: scale(0.8);
 }
 
+/* GLITCH ANIMATION */
 #startupLogo.show {
-  opacity: 1;
-  filter: blur(0);
+  animation: glitchIn 0.6s steps(2, end) forwards;
+}
+
+@keyframes glitchIn {
+  0% { opacity: 0; transform: scale(1.2) skew(10deg); filter: hue-rotate(90deg); }
+  20% { opacity: 1; transform: scale(0.9) skew(-10deg); filter: hue-rotate(-90deg); }
+  40% { transform: scale(1.1) skew(5deg); filter: hue-rotate(180deg); }
+  60% { transform: scale(0.95) skew(-3deg); filter: hue-rotate(-180deg); }
+  80% { transform: scale(1.02) skew(2deg); }
+  100% { opacity: 1; transform: scale(1); filter: none; }
 }
 
 #topIcon {
@@ -196,10 +148,8 @@ body {
 
 <body>
 
-<!-- TOP LEFT ICON -->
 <img src="Tor_Browser_icon.svg" id="topIcon">
 
-<!-- STARTUP SCREEN -->
 <div id="startupScreen">
   <img src="Tor-logo-2011-flat.svg" id="startupLogo" onclick="enterSystem()">
 </div>
@@ -222,7 +172,7 @@ body {
 <div id="loading">Decrypting system...</div>
 <div id="granted">ACCESS GRANTED</div>
 
-<!-- AUDIO FILES -->
+<!-- AUDIO -->
 <audio id="startupSound" src="startup.mp3"></audio>
 <audio id="loadingSound" src="loading.mp3"></audio>
 <audio id="incorrectSound" src="incorrect.mp3"></audio>
@@ -231,15 +181,19 @@ body {
 
 <script>
 
-// STARTUP
+// STARTUP SYNC GLITCH + SOUND
 window.onload = () => {
   const logo = document.getElementById("startupLogo");
   const sound = document.getElementById("startupSound");
 
-  sound.play().catch(()=>{});
+  sound.load(); // preload
+
   setTimeout(() => {
     logo.classList.add("show");
-  }, 300);
+
+    sound.currentTime = 0;
+    sound.play().catch(()=>{});
+  }, 200);
 };
 
 function enterSystem() {
@@ -257,6 +211,7 @@ function login() {
   if (user === "what_isthepassword?" && pass === "fidelio") {
 
     document.getElementById("correctSound").play();
+
     document.getElementById("loginBox").style.display = "none";
 
     const load = document.getElementById("loading");
