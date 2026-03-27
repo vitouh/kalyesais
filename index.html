@@ -52,7 +52,7 @@
   border: none;
   width: 100%;
   height: 100%;
-  background-color: transparent; /* FIXED overlay issue */
+  background-color: transparent;
   color: #f1f1f1;
 }
 
@@ -127,7 +127,6 @@
   border: 1px solid #2d79f3;
 }
 
-/* minimal additions */
 body {
   margin: 0;
   height: 100vh;
@@ -135,6 +134,7 @@ body {
   justify-content: center;
   align-items: center;
   background: black;
+  overflow: hidden;
 }
 
 .error {
@@ -156,12 +156,55 @@ body {
   font-size: 24px;
 }
 
+/* NEW STUFF */
+#startupScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+#startupLogo {
+  width: 150px;
+  opacity: 0;
+  filter: blur(10px);
+  transition: 1.5s ease;
+  cursor: pointer;
+}
+
+#startupLogo.show {
+  opacity: 1;
+  filter: blur(0);
+}
+
+#topIcon {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 30px;
+  display: none;
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="form" id="loginBox">
+<!-- TOP LEFT ICON -->
+<img src="Tor_Browser_icon.svg" id="topIcon">
+
+<!-- STARTUP SCREEN -->
+<div id="startupScreen">
+  <img src="Tor-logo-2011-flat.svg" id="startupLogo" onclick="enterSystem()">
+</div>
+
+<div class="form" id="loginBox" style="display:none;">
   <div class="flex-column"><label>Username</label></div>
   <div class="inputForm">
     <input class="input" id="username" placeholder="Enter Username">
@@ -179,28 +222,59 @@ body {
 <div id="loading">Decrypting system...</div>
 <div id="granted">ACCESS GRANTED</div>
 
+<!-- AUDIO FILES -->
+<audio id="startupSound" src="startup.mp3"></audio>
+<audio id="loadingSound" src="loading.mp3"></audio>
+<audio id="incorrectSound" src="incorrect.mp3"></audio>
+<audio id="correctSound" src="correct.mp3"></audio>
+<audio id="grantedSound" src="access granted.mp3"></audio>
+
 <script>
+
+// STARTUP
+window.onload = () => {
+  const logo = document.getElementById("startupLogo");
+  const sound = document.getElementById("startupSound");
+
+  sound.play().catch(()=>{});
+  setTimeout(() => {
+    logo.classList.add("show");
+  }, 300);
+};
+
+function enterSystem() {
+  document.getElementById("startupScreen").style.display = "none";
+  document.getElementById("loginBox").style.display = "flex";
+  document.getElementById("topIcon").style.display = "block";
+}
+
+// LOGIN
 function login() {
   const user = document.getElementById("username").value;
   const pass = document.getElementById("password").value;
   const error = document.getElementById("errorText");
 
   if (user === "what_isthepassword?" && pass === "fidelio") {
+
+    document.getElementById("correctSound").play();
     document.getElementById("loginBox").style.display = "none";
 
     const load = document.getElementById("loading");
     load.style.display = "block";
+    document.getElementById("loadingSound").play();
 
     setTimeout(() => {
       load.style.display = "none";
       const granted = document.getElementById("granted");
       granted.style.display = "block";
+      document.getElementById("grantedSound").play();
       typeEffect();
     }, 2000);
 
   } else {
     error.style.display = "block";
     error.innerText = randomError();
+    document.getElementById("incorrectSound").play();
   }
 }
 
@@ -230,6 +304,7 @@ function typeEffect() {
   }
   type();
 }
+
 </script>
 
 </body>
