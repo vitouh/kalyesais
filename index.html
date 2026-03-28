@@ -6,7 +6,6 @@
 <title>System</title>
 
 <style>
-/* FORM STYLES */
 .form {
   display: flex;
   flex-direction: column;
@@ -19,9 +18,7 @@
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
-::placeholder {
-  color: #aaa;
-}
+::placeholder { color: #aaa; }
 
 .inputForm {
   border: 1.5px solid #333;
@@ -34,36 +31,25 @@
 }
 
 .input {
-  margin-left: 10px;
-  border-radius: 10px;
-  border: none;
   width: 100%;
   height: 100%;
-  background-color: transparent;
-  color: #f1f1f1; /* typed text white */
+  background: transparent;
+  border: none;
+  color: #f1f1f1;
 }
 
-.input:focus {
-  outline: none;
-}
+.input:focus { outline: none; }
 
 .button-submit {
-  margin: 20px 0 10px 0;
   background-color: #2d79f3;
   border: none;
   color: white;
-  font-size: 15px;
-  font-weight: 500;
   border-radius: 10px;
   height: 50px;
-  width: 100%;
   cursor: pointer;
 }
 
-.flex-column > label {
-  color: #f1f1f1;
-  font-weight: 600;
-}
+.flex-column > label { color: #f1f1f1; }
 
 body {
   margin: 0;
@@ -75,20 +61,13 @@ body {
   overflow: hidden;
 }
 
-.error {
-  color: red;
-  font-size: 12px;
-  display: none;
-}
+.error { color: red; display: none; }
+#loading { display:none; color:#2d79f3; font-family: monospace; }
+#granted { display:none; color:#00ff00; font-family: monospace; font-size:24px; }
 
-#loading { display: none; color: #2d79f3; font-family: monospace; }
-#granted { display: none; color: #00ff00; font-family: monospace; font-size:24px; }
-
-/* STARTUP SCREEN */
+/* STARTUP */
 #startupScreen {
   position: fixed;
-  top:0;
-  left:0;
   width:100%;
   height:100%;
   background:black;
@@ -98,25 +77,22 @@ body {
   z-index:999;
 }
 
-/* LOGO */
 #startupLogo {
-  width: 150px;
+  width:150px;
   cursor:pointer;
-  opacity:1;
 }
 
-/* GLITCH ANIMATION */
+/* GLITCH */
 #startupLogo.show {
-  animation: glitchIn 0.6s steps(2,end) forwards;
+  animation: glitch 0.6s steps(2,end) forwards;
 }
 
-@keyframes glitchIn {
-  0% { opacity:0; transform:scale(1.2) skew(10deg); filter:hue-rotate(90deg);}
-  20% { opacity:1; transform:scale(0.9) skew(-10deg); filter:hue-rotate(-90deg);}
-  40% { transform:scale(1.1) skew(5deg); filter:hue-rotate(180deg);}
-  60% { transform:scale(0.95) skew(-3deg); filter:hue-rotate(-180deg);}
-  80% { transform:scale(1.02) skew(2deg);}
-  100% { opacity:1; transform:scale(1); filter:none;}
+@keyframes glitch {
+  0% {opacity:0; transform:scale(1.2) skew(10deg);}
+  20% {opacity:1; transform:scale(0.9) skew(-10deg);}
+  40% {transform:scale(1.1) skew(5deg);}
+  60% {transform:scale(0.95) skew(-3deg);}
+  100% {opacity:1; transform:scale(1);}
 }
 
 #topIcon {
@@ -138,48 +114,54 @@ body {
 </div>
 
 <div class="form" id="loginBox" style="display:none;">
-  <div class="flex-column"><label>Username</label></div>
+  <label>Username</label>
   <div class="inputForm">
     <input class="input" id="username" placeholder="Enter Username">
   </div>
 
-  <div class="flex-column"><label>Password</label></div>
+  <label>Password</label>
   <div class="inputForm">
     <input class="input" id="password" type="password" placeholder="Enter Password">
   </div>
 
   <button class="button-submit" onclick="login(event)">Login</button>
-  <div class="error" id="errorText">Error...</div>
+  <div class="error" id="errorText">Error</div>
 </div>
 
 <div id="loading">Decrypting system...</div>
 <div id="granted">ACCESS GRANTED</div>
 
-<!-- AUDIO -->
-<audio id="startupSound" src="startup.mp3"></audio>
-<audio id="loadingSound" src="loading.mp3"></audio>
-<audio id="incorrectSound" src="incorrect.mp3"></audio>
-<audio id="correctSound" src="correct.mp3"></audio>
-<audio id="grantedSound" src="access granted.mp3"></audio>
-<audio id="clickSound" src="click.mp3"></audio>
-
 <script>
+// BACKGROUND SOUND PLAYER
+function playSound(src, volume = 0.3){
+  const sound = new Audio(src);
+  sound.volume = volume;
+  sound.play().catch(()=>{});
+}
+
 // GLOBAL CLICK SOUND
 document.addEventListener("click", function(e) {
-  if(e.target.id === "startupLogo") return; // skip logo
-  const click = document.getElementById("clickSound");
-  click.currentTime = 0;
-  click.play().catch(()=>{});
+  if (e.target.id === "startupLogo") return;
+  playSound("click.mp3", 0.2);
 });
 
-// ENTER SYSTEM (glitch + startup sound on click)
+// INCORRECT SOUND (OVERLAY + 500ms GAP)
+let lastIncorrect = 0;
+function playIncorrect(){
+  const now = Date.now();
+  if(now - lastIncorrect >= 500){
+    playSound("incorrect.mp3", 0.35);
+    lastIncorrect = now;
+  }
+}
+
+// ENTER SYSTEM
 function enterSystem(e){
   e.stopPropagation();
-  const sound = document.getElementById("startupSound");
+
   const logo = document.getElementById("startupLogo");
 
-  sound.currentTime = 0;
-  sound.play().catch(()=>{});
+  playSound("startup.mp3", 0.4);
 
   setTimeout(()=>{
     logo.classList.remove("show");
@@ -197,34 +179,43 @@ function enterSystem(e){
 // LOGIN
 function login(e){
   e.stopPropagation();
-  const user=document.getElementById("username").value;
-  const pass=document.getElementById("password").value;
-  const error=document.getElementById("errorText");
 
-  if(user==="what_isthepassword?" && pass==="fidelio"){
-    document.getElementById("correctSound").play();
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+  const error = document.getElementById("errorText");
+
+  if(user === "what_isthepassword?" && pass === "fidelio"){
+    playSound("correct.mp3", 0.3);
+
     document.getElementById("loginBox").style.display="none";
-    const load=document.getElementById("loading");
+
+    const load = document.getElementById("loading");
     load.style.display="block";
-    document.getElementById("loadingSound").play();
+    playSound("loading.mp3", 0.3);
 
     setTimeout(()=>{
       load.style.display="none";
-      const granted=document.getElementById("granted");
+      const granted = document.getElementById("granted");
       granted.style.display="block";
-      document.getElementById("grantedSound").play();
+      playSound("access granted.mp3", 0.4);
       typeEffect();
     },2000);
 
-  }else{
+  } else {
     error.style.display="block";
     error.innerText=randomError();
-    document.getElementById("incorrectSound").play();
+    playIncorrect();
   }
 }
 
 function randomError(){
-  const errors=["Connection Lost...","System Failure...","Unauthorized Access...","Data Corrupted...","ERROR 0x0001"];
+  const errors = [
+    "Connection Lost...",
+    "System Failure...",
+    "Unauthorized Access...",
+    "Data Corrupted...",
+    "ERROR 0x0001"
+  ];
   return errors[Math.floor(Math.random()*errors.length)];
 }
 
@@ -233,6 +224,7 @@ function typeEffect(){
   const el=document.getElementById("granted");
   el.innerHTML="";
   let i=0;
+
   function type(){
     if(i<text.length){
       el.innerHTML+=text.charAt(i);
